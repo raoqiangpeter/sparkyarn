@@ -1,0 +1,16 @@
+#!/bin/bash
+date1="$(date +%Y%m%d)"
+source /home/hadoop/rm-outpath.sh HC1006HC
+# change path to spark_path
+cd $SPARK_HOME
+# execute spark submit, then upload file to local from hdfs
+./bin/spark-submit --class com.raoqiang.scala.PreApp \
+    --master yarn \
+    --deploy-mode cluster \
+    --driver-memory 6g \
+    --executor-memory 6g \
+    --executor-cores 2 \
+    --queue homeCredit \
+    --conf spark.sql.shuffle.partitions=2000 \
+    myjar/sparkyarn.jar $date1 > /usr/mysoft/spark/hc_logs/HC1006HC"$date1".log 2>&1  && hdfs dfs -get /user/spark/HC1006HC/$date1/pa* ~/hc_data/HC2006HC"$date1".csv & 
+
