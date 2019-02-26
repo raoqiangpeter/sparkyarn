@@ -11,5 +11,11 @@ cd $SPARK_HOME
     --executor-memory 4g \
     --executor-cores 2 \
     --queue homeCredit \
-    myjar/sparkyarn.jar $date1 > /usr/mysoft/spark/hc_logs/HC1003HC"$date1".log 2>&1  && hdfs dfs -get /user/spark/HC1003HC/$date1/pa* ~/hc_data/HC2003HC"$date1".csv & 
+    myjar/sparkyarn.jar $date1 > /usr/mysoft/spark/hc_logs/HC1003HC"$date1".log 2>&1  && hdfs dfs -get /user/spark/HC1003HC/$date1/pa* ~/hc_data/HC2003HC"$date1".csv && HADOOP_CLASSPATH=/usr/mysoft/hbase/lib/hbase-protocol-1.2.6.jar:/usr/mysoft/hbase/conf/ hadoop \
+    jar /usr/mysoft/phoenix/phoenix-4.14.1-HBase-1.2-client.jar org.apache.phoenix.mapreduce.CsvBulkLoadTool \
+    -z hadoop00:2181 \
+    --table T_CREDIT_CARD \
+    --input /user/spark/HC1003HC/$date1/part* >> /usr/mysoft/spark/hc_logs/HC1003HC"$date1".log 2>&1 &
+
+
 
